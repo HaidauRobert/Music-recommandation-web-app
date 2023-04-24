@@ -5,15 +5,22 @@ import './Explore.css';
 import SpotifyPlayer from './SpotifyPlayer';
 import { useLocation } from 'react-router-dom';
 import { getTrack, searchTracks, getToken, getPlaylistsByGenre } from './Spotify';
+import beginImage from './poze/begin.jpg';
+import pauseImage from './poze/pause.png';
+
 const SPOTIFY_API_URL = 'https://api.spotify.com/v1';
 const Explore = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const code = queryParams.get('code');
 
-  const [songPlaying, setSongPlaying] = useState(false);
+  const [songPlaying, setSongPlaying] = useState(true);
   const [song, setSong] = useState(null);
   const [accessToken, setAccessToken] = useState('');
+  const [hasStarted, setHasStarted] = useState(false);
+  const [showPauseImage, setShowPauseImage] = useState(false);
+
+
 
   useEffect(() => {
     if (!code) return;
@@ -32,26 +39,29 @@ const Explore = () => {
 
   useEffect(() => {
     if (!accessToken) return;
-  
-    async function fetchSong() {
-      const track = await searchTracks('the weeknd', accessToken);
-      setSong(track);
-    }
-  
-    fetchSong();
+    fetchRandomSong();
   }, [accessToken]);
-  
+
+  const startExperience = async () => {
+    setHasStarted(true);
+    const audio = document.getElementById('song-audio');
+    audio.play();
+    setSongPlaying(true);
+  };
 
   const playSong = () => {
     const audio = document.getElementById('song-audio');
     if (!songPlaying) {
       audio.play();
       setSongPlaying(true);
+      setShowPauseImage(false);
     } else {
       audio.pause();
       setSongPlaying(false);
+      setShowPauseImage(true);
     }
   };
+
 
   const fetchRandomSong = async () => {
     const randomGenres = ["pop", "rock", "hiphop", "jazz", "rnb"];
@@ -59,21 +69,21 @@ const Explore = () => {
     console.log(randomGenre);
     const playlists = await getPlaylistsByGenre(randomGenre, accessToken);
     const randomPlaylist = playlists[Math.floor(Math.random() * playlists.length)];
-    
+
     const playlistTracksResponse = await axios.get(`${SPOTIFY_API_URL}/playlists/${randomPlaylist.id}/tracks`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-  
+
     const playlistTracks = playlistTracksResponse.data.items;
     let randomTrack = null;
-  do {
-    randomTrack = playlistTracks[Math.floor(Math.random() * playlistTracks.length)].track;
-  } while (!randomTrack.preview_url);
+    do {
+      randomTrack = playlistTracks[Math.floor(Math.random() * playlistTracks.length)].track;
+    } while (!randomTrack.preview_url);
     setSong(randomTrack);
   };
-  
+
 
   const onSwipedLeft = async () => {
     console.log('Swiped left - Dislike');
@@ -83,18 +93,18 @@ const Explore = () => {
       audio.currentTime = 0;
     }
     await fetchRandomSong();
-    
+
   };
-  
+
   const onSwipedRight = async () => {
     console.log('Swiped right - Like');
     const audio = document.getElementById('song-audio');
     if (audio) {
       audio.pause();
-      audio.currentTime = 0; 
+      audio.currentTime = 0;
     }
     await fetchRandomSong();
-};
+  };
 
   const handleKeyDown = (event) => {
     if (event.key === 'ArrowLeft') {
@@ -109,33 +119,48 @@ const Explore = () => {
     onSwipedRight,
   });
 
-  if (!song) return <div>Loading...</div>;
-
   return (
     <div className="explore-container">
-      <div
-        className="song-container"
-        {...swipeHandlers}
-      >
-         <div className="image-wrapper"
-         style={{
-          backgroundImage: `url(${song.album.images[0].url})`,
-          backgroundSize: 'contain',
-          backgroundPosition: 'center',
-        }}>
-        </div>
-      </div>
-  <audio id="song-audio" src={song.preview_url} autoPlay={true}></audio>
-      <br></br>
-      <div className="buttons-container">
-        <button className="dislike-button" onClick={onSwipedLeft}>
-          Dislike
-        </button>
-        <button className="like-button" onClick={onSwipedRight}>
-          Like
-        </button>
-      </div>
-      <SpotifyPlayer accessToken={accessToken} trackUri={song.uri} />
+      {song ? (
+        <>
+          <div
+            className="song-container"
+            {...swipeHandlers}
+          >
+            <div className="image-wrapper"
+              onClick={hasStarted ? playSong : startExperience}
+              style={{
+                backgroundImage: `url(${song.album.images[0].url})`,
+                backgroundSize: 'contain',
+                backgroundPosition: 'center',
+              }}>
+              {showPauseImage && (
+                <div className="pause-overlay">
+                  <img src={pauseImage} alt="Pause" />
+                </div>
+              )}
+              {!hasStarted && (
+                <div className="start-overlay">
+                  <img src={beginImage} alt="Click here to start" />
+                </div>
+              )}
+            </div>
+          </div>
+          <audio id="song-audio" src={song.preview_url} autoPlay={hasStarted}></audio>
+          <br></br>
+          <div className="buttons-container">
+            <button className="dislike-button" onClick={onSwipedLeft} disabled={!hasStarted}>
+              Dislike
+            </button>
+            <button className="like-button" onClick={onSwipedRight} disabled={!hasStarted}>
+              Like
+            </button>
+          </div>
+          <SpotifyPlayer accessToken={accessToken} trackUri={song.uri} />
+        </>
+      ) : (
+        <div>Loading...</div>
+      )}
     </div>
   );
 };
