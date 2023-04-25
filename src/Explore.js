@@ -4,11 +4,12 @@ import { useSwipeable } from 'react-swipeable';
 import './Explore.css';
 import SpotifyPlayer from './SpotifyPlayer';
 import { useLocation } from 'react-router-dom';
-import { getTrack, searchTracks, getToken, getPlaylistsByGenre } from './Spotify';
+import { getTrack, searchTracks, getToken, getPlaylistsByGenre, getUserProfile } from './Spotify';
 import beginImage from './poze/begin.jpg';
 import pauseImage from './poze/pause.png';
 
 const SPOTIFY_API_URL = 'https://api.spotify.com/v1';
+const BACKEND_API_URL = 'http://localhost:5000';
 const Explore = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -40,6 +41,22 @@ const Explore = () => {
   useEffect(() => {
     if (!accessToken) return;
     fetchRandomSong();
+  }, [accessToken]);
+
+  useEffect(() => {
+    async function addUserToDatabase() {
+      try {
+        const response = await axios.post(`${BACKEND_API_URL}/login`, {
+          spotifyUserId: await getUserProfile(accessToken),
+        });
+        console.log(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    if (accessToken) {
+      addUserToDatabase();
+    }
   }, [accessToken]);
 
   const startExperience = async () => {
@@ -87,6 +104,7 @@ const Explore = () => {
 
   const onSwipedLeft = async () => {
     console.log('Swiped left - Dislike');
+    setShowPauseImage(false)
     const audio = document.getElementById('song-audio');
     if (audio) {
       audio.pause();
@@ -98,6 +116,7 @@ const Explore = () => {
 
   const onSwipedRight = async () => {
     console.log('Swiped right - Like');
+    setShowPauseImage(false)
     const audio = document.getElementById('song-audio');
     if (audio) {
       audio.pause();
@@ -166,3 +185,4 @@ const Explore = () => {
 };
 
 export default Explore;
+

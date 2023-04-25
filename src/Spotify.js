@@ -43,6 +43,26 @@ async function getTrack(trackId, token) {
   return track;
 }
 
+async function getUserProfile(token) {
+  try {
+    const response = await axios.get('https://api.spotify.com/v1/me', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const userProfile = response.data;
+    const userId = userProfile.id;
+
+    // Save the user's Spotify ID, access token, and refresh token to your database
+
+    return userId;
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+    throw error;
+  }
+}
+
 
 async function searchTracks(query, token) {
   const response = await axios.get(`${SPOTIFY_API_URL}/search`, {
@@ -71,4 +91,4 @@ async function getPlaylistsByGenre(genre, token) {
   return response.data.playlists.items;
 };
 
-export { getToken, getTrack, searchTracks, getPlaylistsByGenre };
+export { getToken, getTrack, searchTracks, getPlaylistsByGenre, getUserProfile };
