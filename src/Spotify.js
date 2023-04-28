@@ -53,12 +53,11 @@ async function getUserProfile(token) {
 
     const userProfile = response.data;
     const userId = userProfile.id;
-
-    // Save the user's Spotify ID, access token, and refresh token to your database
-
+    
     return userId;
   } catch (error) {
     console.error('Error fetching user profile:', error);
+    console.error('Error response:', error.response); // Add this line
     throw error;
   }
 }
@@ -91,4 +90,4 @@ async function getPlaylistsByGenre(genre, token) {
   return response.data.playlists.items;
 };
 
-export { getToken, getTrack, searchTracks, getPlaylistsByGenre, getUserProfile };
+export { getToken, getTrack, searchTracks, getPlaylistsByGenre, getUserProfile};
