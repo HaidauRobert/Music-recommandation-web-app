@@ -1,6 +1,7 @@
 import { React } from 'react';
-import { Button } from 'antd';
+import { PlayCircleOutlined  } from '@ant-design/icons';
 import './CSS files/Login.css';
+import logo from './poze/SwipeTunes.png';
 
 
 function Login() {
@@ -16,17 +17,17 @@ function Login() {
 
   return (
     <div className="login-page">
+      <div class="logo-container">
+        <img src={logo} alt="Your Logo" />
+      </div>
+      <div className='circle'>
+      </div>
       <div className="login-container">
-        <div className="login-card">
-          <div className="login-header-box">
-            <h1 className="login-header">Log in</h1>
-          </div>
-          <div className="button-login">
-            <Button onClick={handleSpotifyLoginOrSignup} className="spotify-login-button">
-              Log in with Spotify
-            </Button>
-          </div>
-        </div>
+      <h1 class="header-big">Find Your New Favorite <br/>Song</h1>
+      <h2 class="header-small">Tired Of Listening To The Same Music For Months? Find out The Best Way To Explore New <br/> Artists, New Genres And New Songs</h2>
+        <button class="button" onClick={handleSpotifyLoginOrSignup}>
+        <PlayCircleOutlined /> CONNECT WITH SPOTIFY
+        </button>
       </div>
     </div>
   );

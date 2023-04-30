@@ -37,6 +37,22 @@ class UserGenrePreference(db.Model):
     jazz = db.Column(db.Integer, default=0)
     rnb = db.Column(db.Integer, default=0)
 
+@app.route('/get_genre_preference/<int:user_id>', methods=['GET'])
+def get_genre_preference(user_id):
+    user_genre_preference = UserGenrePreference.query.filter_by(user_id=user_id).first()
+
+    if user_genre_preference is None:
+        return jsonify({"error": "User not found"}), 404
+
+    genre_preference_data = {
+        "pop": user_genre_preference.pop,
+        "rock": user_genre_preference.rock,
+        "hiphop": user_genre_preference.hiphop,
+        "jazz": user_genre_preference.jazz,
+        "rnb": user_genre_preference.rnb,
+    }
+
+    return jsonify(genre_preference_data)
 
 @app.route('/login', methods=['POST'])
 def login():

@@ -4,9 +4,10 @@ import { useSwipeable } from 'react-swipeable';
 import './CSS files/Explore.css';
 import SpotifyPlayer from './SpotifyPlayer';
 import { getToken, getPlaylistsByGenre, getUserProfile } from './Spotify';
-import beginImage from './poze/begin.jpg';
 import pauseImage from './poze/pause.png';
 import Loading from './Loading';
+import logo from './poze/SwipeTunes.png'
+import play from './poze/play.png'
 
 
 const SPOTIFY_API_URL = 'https://api.spotify.com/v1';
@@ -113,9 +114,37 @@ const Explore = (props) => {
     }
   };
 
+  const fetchLikedSongs = async (userId) => {
+    try {
+      const response = await axios.get(`${BACKEND_API_URL}/liked_songs`, {
+        params: { userId },
+      });
+      return response.data.items;
+    } catch (error) {
+      console.error(error);
+    }
+    return [];
+  };
+  
+
   const fetchRandomSong = async () => {
-    const randomGenres = ["pop", "rock", "hiphop", "jazz", "rnb"];
-    const randomGenre = randomGenres[Math.floor(Math.random() * randomGenres.length)];
+    const response = await axios.get(`${BACKEND_API_URL}/get_genre_preference/${props.userId}`);
+    const genrePreferences = response.data;
+  
+    let sum = 0;
+    for (const value of Object.values(genrePreferences)) {
+      sum += value;
+    }
+  
+    let randomGenre = '';
+    let randomValue = Math.random() * sum;
+    for (const [genre, value] of Object.entries(genrePreferences)) {
+      randomValue -= value;
+      if (randomValue <= 0) {
+        randomGenre = genre;
+        break;
+      }
+    }
     console.log(randomGenre);
     setGenre(randomGenre);
     const playlists = await getPlaylistsByGenre(randomGenre, accessToken);
@@ -128,10 +157,14 @@ const Explore = (props) => {
     });
 
     const playlistTracks = playlistTracksResponse.data.items;
+    const likedSongs = await fetchLikedSongs(props.userId); 
+    const likedSongIds = likedSongs.map((song) => song.song_id);
     let randomTrack = null;
     do {
       randomTrack = playlistTracks[Math.floor(Math.random() * playlistTracks.length)].track;
-    } while (!randomTrack.preview_url);
+    } while (!randomTrack.preview_url || likedSongIds.includes(randomTrack.id));
+    console.log(randomTrack.id);
+    console.log(likedSongIds);
     setSong(randomTrack);
   };
 
@@ -190,7 +223,8 @@ const Explore = (props) => {
               )}
               {!hasStarted && (
                 <div className="start-overlay">
-                  <img src={beginImage} alt="Click here to start" />
+                  <img src={logo} alt="Logo"></img> 
+                  <img src={play} alt="Play Button" className='playButton'></img>
                 </div>
               )}
             </div>

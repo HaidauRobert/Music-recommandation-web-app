@@ -1,6 +1,6 @@
 .library-page {
   text-align: center;
-  background-image: url("../poze/fundalLogin.jpg");
+  background-color: rgba(40,41,45,1);
   height: 100vh;
   display: flex;
   justify-content: center;
