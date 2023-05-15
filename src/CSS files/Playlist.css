@@ -1,0 +1,21 @@
+.library-page {
+    text-align: center;
+    background-color: rgba(40, 41, 45, 1);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Orbitron', sans-serif;
+}
+
+.library-card {
+    background-color: #1f1f1f;
+    border-radius: 1%;
+    padding: 2%;
+    box-shadow: 0 1% 1.5% rgba(0, 0, 0, 0.2);
+    width: 80%;
+    height: 80%;
+    margin: 0 auto;
+    margin-left: 10%;
+    overflow-y: auto;
+}

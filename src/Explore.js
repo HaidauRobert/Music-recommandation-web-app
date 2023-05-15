@@ -19,6 +19,8 @@ const Explore = (props) => {
     const code = searchParams.get('code');
     props.handleCode(code)
   }
+  const [swipeDirection, setSwipeDirection] = useState('');
+  const [isSwiping, setIsSwiping] = useState(false);
   const [songPlaying, setSongPlaying] = useState(true);
   const [song, setSong] = useState(null);
   const [accessToken, setAccessToken] = useState(localStorage.getItem('accessToken') || '');
@@ -43,10 +45,10 @@ const Explore = (props) => {
   }, [code]);
 
   useEffect(() => {
-    if (!accessToken) return;
+    if (!accessToken || !props.userId) return;
     fetchRandomSong();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accessToken]);
+  }, [accessToken, props.userId]);
 
   useEffect(() => {
     async function addUserToDatabase() {
@@ -54,7 +56,6 @@ const Explore = (props) => {
         const response = await axios.post(`${BACKEND_API_URL}/login`, {
           spotifyUserId: await getUserProfile(accessToken),
         });
-        console.log(response.data);
         props.handleUserId(response.data.userId);
       } catch (error) {
         console.error(error);
@@ -68,12 +69,11 @@ const Explore = (props) => {
 
   const updateGenrePreference = async (userId, genre, isLiked) => {
     try {
-      const response = await axios.post(`${BACKEND_API_URL}/update_genre_preference`, {
+      await axios.post(`${BACKEND_API_URL}/update_genre_preference`, {
         userId: userId,
         genre: genre,
         isLiked: isLiked,
       });
-      console.log(response.data);
     } catch (error) {
       console.error(error);
     }
@@ -101,14 +101,13 @@ const Explore = (props) => {
 
   const saveLikedSong = async (userId, song) => {
     try {
-      const response = await axios.post(`${BACKEND_API_URL}/liked_songs`, {
+      await axios.post(`${BACKEND_API_URL}/liked_songs`, {
         songId: song.id,
         songTitle: song.name,
         songArtist: song.artists[0].name,
         albumImageUrl: song.album.images[0].url,
         userId: userId,
       });
-      console.log(response.data);
     } catch (error) {
       console.error(error);
     }
@@ -125,17 +124,17 @@ const Explore = (props) => {
     }
     return [];
   };
-  
+
 
   const fetchRandomSong = async () => {
     const response = await axios.get(`${BACKEND_API_URL}/get_genre_preference/${props.userId}`);
     const genrePreferences = response.data;
-  
+
     let sum = 0;
     for (const value of Object.values(genrePreferences)) {
       sum += value;
     }
-  
+
     let randomGenre = '';
     let randomValue = Math.random() * sum;
     for (const [genre, value] of Object.entries(genrePreferences)) {
@@ -145,7 +144,6 @@ const Explore = (props) => {
         break;
       }
     }
-    console.log(randomGenre);
     setGenre(randomGenre);
     const playlists = await getPlaylistsByGenre(randomGenre, accessToken);
     const randomPlaylist = playlists[Math.floor(Math.random() * playlists.length)];
@@ -155,22 +153,20 @@ const Explore = (props) => {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-
     const playlistTracks = playlistTracksResponse.data.items;
-    const likedSongs = await fetchLikedSongs(props.userId); 
+    const likedSongs = await fetchLikedSongs(props.userId);
     const likedSongIds = likedSongs.map((song) => song.song_id);
     let randomTrack = null;
     do {
       randomTrack = playlistTracks[Math.floor(Math.random() * playlistTracks.length)].track;
     } while (!randomTrack.preview_url || likedSongIds.includes(randomTrack.id));
-    console.log(randomTrack.id);
-    console.log(likedSongIds);
     setSong(randomTrack);
   };
 
 
   const onSwipedLeft = async () => {
-    console.log('Swiped left - Dislike');
+    setSwipeDirection('left');
+    setIsSwiping(true);
     setShowPauseImage(false)
     const audio = document.getElementById('song-audio');
     if (audio) {
@@ -182,9 +178,9 @@ const Explore = (props) => {
     await fetchRandomSong();
 
   };
-
   const onSwipedRight = async () => {
-    console.log('Swiped right - Like');
+    setSwipeDirection('right');
+    setIsSwiping(true);
     setShowPauseImage(false)
     const audio = document.getElementById('song-audio');
     if (audio) {
@@ -196,20 +192,17 @@ const Explore = (props) => {
     await fetchRandomSong();
   };
 
-  const swipeHandlers = useSwipeable({
-    onSwipedLeft,
-    onSwipedRight,
-  });
+  const handleTransitionEnd = () => {
+    setIsSwiping(false);
+    setSwipeDirection('');
+  };  
 
   return (
-    <div className="explore-container">
-      {song ? (
+    <div className={`explore-container ${isSwiping ? 'swiping' : ''}`} onTransitionEnd={handleTransitionEnd}>
+    {song ? (
         <>
-          <div
-            className="song-container"
-            {...swipeHandlers}
-          >
-            <div className="image-wrapper"
+          <div className="song-container">
+            <div className={`image-wrapper ${isSwiping ? `swipe-${swipeDirection}` : ''}`}
               onClick={hasStarted ? playSong : startExperience}
               style={{
                 backgroundImage: `url(${song.album.images[0].url})`,
@@ -223,7 +216,7 @@ const Explore = (props) => {
               )}
               {!hasStarted && (
                 <div className="start-overlay">
-                  <img src={logo} alt="Logo"></img> 
+                  <img src={logo} alt="Logo"></img>
                   <img src={play} alt="Play Button" className='playButton'></img>
                 </div>
               )}

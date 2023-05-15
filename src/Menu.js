@@ -14,17 +14,29 @@ const Menu = ({ userId, code }) => {
         <div className="menu-items">
           <button
             onClick={() =>
-              navigate('/explore', { state: { userId: userId, code: code } })
+              {navigate('/explore', { state: { userId: userId, code: code } });
+              setIsOpen(false); }
             }
           >
             Explore
           </button>
           <button
             onClick={() =>
+              {
               navigate('/library', { state: { userId: userId, code: code } })
+              setIsOpen(false)}
             }
           >
             Library
+          </button>
+          <button
+            onClick={() =>
+              {
+              navigate('/playlist', { state: { userId: userId, code: code } })
+              setIsOpen(false)}
+            }
+          >
+            Playlist
           </button>
         </div>
       )}

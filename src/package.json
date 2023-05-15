@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "@ant-design/icons": "^5.0.1",
+    "react-spinners": "^0.13.8"
+  },
+  "scripts": {
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:backend": "cd ../src/Backend && python app.py",
+    "start:frontend": "react-scripts start"
+  }
+}

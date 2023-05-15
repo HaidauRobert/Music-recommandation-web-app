@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
+
 .library-page {
   text-align: center;
   background-color: rgba(40,41,45,1);
@@ -5,6 +7,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  font-family: 'Orbitron', sans-serif;
 }
 
 .library-card {
@@ -60,8 +63,22 @@
 }
 
 .song-info {
-  text-align: left;
+  text-align: center;
   padding: 0.5%;
+}
+
+.song-info button {
+    margin-left: 5px;
+    margin-bottom: 5px;
+    font-family: 'Orbitron', sans-serif;
+}
+
+.delete-button {
+  background-color:rgba(255, 0, 0, 1);
+}
+
+.spotify-button {
+  background-color:#40ff00;
 }
 
 .song-info h3 {

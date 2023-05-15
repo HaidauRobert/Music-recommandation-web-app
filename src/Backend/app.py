@@ -116,6 +116,20 @@ def get_liked_songs():
                          "album_image_url": song.album_image_url} for song in liked_songs] # add album image URL here
     return jsonify({"items": liked_songs_data})
 
+@app.route('/liked_songs', methods=['DELETE'])
+def delete_liked_song():
+    data = request.get_json()
+    user_id = data['userId']
+    song_id = data['songId']
+
+    liked_song = LikedSongs.query.filter_by(user_id=user_id, song_id=song_id).first()
+    if liked_song:
+        db.session.delete(liked_song)
+        db.session.commit()
+        return jsonify({'message': 'Song deleted'}), 200
+    else:
+        return jsonify({'message': 'Song not found'}), 404
+
 
 if __name__ == '__main__':
     app.run(debug=True)

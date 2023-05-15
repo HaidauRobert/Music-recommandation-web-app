@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { DeleteOutlined, PlayCircleOutlined } from '@ant-design/icons';
 import './CSS files/Library.css';
 
 const BACKEND_API_URL = 'http://localhost:5000';
 
 function Library(props) {
-    
+
     const [likedSongs, setLikedSongs] = useState([]);
     const userId = props.userId;
 
@@ -15,7 +16,7 @@ function Library(props) {
                 userId: userId,
             },
         });
-        
+
         const songs = response.data.items.map((song) => {
             return {
                 song_id: song.song_id,
@@ -28,6 +29,28 @@ function Library(props) {
         return songs;
     }
 
+    const handleDelete = async (songId) => {
+        try {
+            // Remove the song from the likedSongs state
+            setLikedSongs(likedSongs.filter((song) => song.song_id !== songId));
+
+            // Delete the song from the database
+            await axios.delete(`${BACKEND_API_URL}/liked_songs`, {
+                data: {
+                    userId: userId,
+                    songId: songId,
+                },
+            });
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const redirectToSpotify = (songId) => {
+        const spotifyUrl = `https://open.spotify.com/track/${songId}`;
+        window.open(spotifyUrl, '_blank');
+    };
+    
 
     useEffect(() => {
         const fetchSongs = async () => {
@@ -46,19 +69,33 @@ function Library(props) {
     return (
         <div className="library-page">
             <div className="library-card">
-            <div className="library-container">
-                {likedSongs.map((song, index) => (
-                    <div key={index} className="song-card">
-                        <img src={song.album_image_url} alt="Album Art" />
-                        <div className="song-info">
-                            <h3>{song.song_title}</h3>
-                            <p>{song.song_artist}</p>
+                <div className="library-container">
+                    {likedSongs.map((song, index) => (
+                        <div key={index} className="song-card">
+                            <img src={song.album_image_url} alt="Album Art" />
+                            <div className="song-info">
+                                <h3>{song.song_title}</h3>
+                                <p>{song.song_artist}</p>
+                                <button
+                                    className="delete-button"
+                                    onClick={() => handleDelete(song.song_id)}
+                                >
+                                    <DeleteOutlined />
+                                </button>
+                                <button
+                                    className="spotify-button"
+                                    onClick={() => redirectToSpotify(song.song_id)}
+                                >
+                                    Redirect to Spotify &nbsp;
+                                    <PlayCircleOutlined />
+                                </button>
+
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
         </div>
-    </div>
     );
 }
 

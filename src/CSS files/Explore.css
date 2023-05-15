@@ -43,11 +43,11 @@
   background-color: white;
   border: none;
   color: black;
-  padding: 10% 20%;
+  padding: 10% 30%;
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 22px;
+  font-size: 125%;
   margin-left:15%;
   margin-right:15%;
   cursor: pointer;
@@ -101,4 +101,26 @@
 .dislike-button:hover:disabled,
 .like-button:hover:disabled {
   background-color: #808080;
+}
+
+.swipe-left {
+  transform: translateX(-100%);
+  opacity: 0;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.swipe-right {
+  transform: translateX(100%);
+  opacity: 0;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.song-container {
+  position: relative;
+}
+
+.song-container.swipe-left,
+.song-container.swipe-right {
+  position: absolute;
+  z-index: 2;
 }
