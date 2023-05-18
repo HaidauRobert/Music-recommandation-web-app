@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
+
+.addsongs-page {
+    text-align: center;
+    background-color: rgba(40, 41, 45, 1);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Orbitron', sans-serif;
+}
+
+.title {
+    font-size: 300%;
+    margin-top: 0%;
+}
+
+.addsongs-card {
+    background-color: #1f1f1f;
+    border-radius: 1%;
+    padding: 2%;
+    box-shadow: 0 1% 1.5% rgba(0, 0, 0, 0.2);
+    width: 50%;
+    height: 80%;
+    margin: auto;
+    overflow-y: auto;
+}
+
+.input-form form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 2%;
+    font-size: 150%;
+    width: 100%;
+}
+
+.input-form form input {
+    margin-bottom: 10px;
+    border: none;
+    background-color: black;
+    color: gray;
+    font-size: 75%;
+    border-radius: 8px;
+    padding: 5px;
+    transition-duration: 0.4s;
+}
+
+.input-form input[type="text"]:focus {
+    background-color: #1DB954;
+    color: white;
+}
+
+.input-form button[type="submit"] {
+    border: none;
+    background-color: #1DB954;
+    color: white;
+    text-decoration: none;
+    font-size: 75%;
+    cursor: pointer;
+    border-radius: 8px;
+    transition-duration: 0.4s;
+}
+
+.input-form button[type="submit"]:hover {
+    background-color: black;
+    color: #1DB954;
+}
+
+.track-info {
+    color: #1DB954;
+    position: relative;
+    margin: auto;
+}
+
+.song-img {
+    margin: auto;
+    width: 48%;
+    height: 99%;
+    border-radius: 10px;
+    border: 4px solid #1f1f1f;
+    overflow: hidden;
+    position: relative;
+    object-fit: contain;
+}
+
+.song-img img{
+    width: 60%;
+    height: 60%;
+    border-radius: 3%;
+    display:flex;
+    position: relative;
+    margin: auto;
+}
+
+.pause img {
+    position:absolute;
+    top:0;
+    left:0;
+    margin-left:15%;
+    width: 70%;
+    height: 100%;
+    display: flex;
+}

@@ -3,13 +3,15 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from './Login';
 import Explore from './Explore';
 import Library from './Library';
-import Playlist from './Playlist';
+import AddSongs from './AddSongs';
 import Menu from './Menu';
 import './CSS files/App.css';
+import GuessTheSong from './GuessTheSong';
 
 function App() {
   const [code, setCode] = useState('');
   const [userId, setUserId] = useState(null);
+  const [token, setToken] = useState('');
 
   const handleCode = (code) => {
     setCode(code);
@@ -18,6 +20,10 @@ function App() {
   const handleUserId = (id) => {
     setUserId(id);
   };
+  
+  const handleToken = (token) => {
+    setToken(token)
+  }
 
   return (
     <Router>
@@ -33,7 +39,7 @@ function App() {
               element={
                 <>
                   <Menu />
-                  <Explore code={code} userId={userId} handleCode={handleCode} handleUserId={handleUserId}/>
+                  <Explore code={code} userId={userId} token={token} handleCode={handleCode} handleUserId={handleUserId} handleToken={handleToken}/>
                 </>
               }
             />
@@ -42,18 +48,27 @@ function App() {
               element={
                 <>
                   <Menu />
-                  <Library code={code} userId={userId} />
+                  <Library code={code} userId={userId} token={token}/>
                 </>
               }
             />
             <Route
-              path="/playlist"
+              path="/AddSongs"
               element={
                 <>
                   <Menu />
-                  <Playlist code={code} userId={userId} />
+                  <AddSongs code={code} userId={userId} token={token}/>
                 </>
               }
+              />
+          <Route
+              path="/GuessTheSong"
+              element={
+                <>
+                  <Menu />
+                  <GuessTheSong code={code} userId={userId} token={token}/>
+                </>
+                }
               />
           </Routes>
         </div>

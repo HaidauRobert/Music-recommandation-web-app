@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { MenuOutlined } from '@ant-design/icons';
 import './CSS files/Menu.css';
 
-const Menu = ({ userId, code }) => {
+const Menu = ({ userId, code, token }) => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -14,7 +14,7 @@ const Menu = ({ userId, code }) => {
         <div className="menu-items">
           <button
             onClick={() =>
-              {navigate('/explore', { state: { userId: userId, code: code } });
+              {navigate('/explore', { state: { userId: userId, code: code, token: token } });
               setIsOpen(false); }
             }
           >
@@ -23,7 +23,7 @@ const Menu = ({ userId, code }) => {
           <button
             onClick={() =>
               {
-              navigate('/library', { state: { userId: userId, code: code } })
+              navigate('/library', { state: { userId: userId, code: code, token: token } })
               setIsOpen(false)}
             }
           >
@@ -32,11 +32,20 @@ const Menu = ({ userId, code }) => {
           <button
             onClick={() =>
               {
-              navigate('/playlist', { state: { userId: userId, code: code } })
+              navigate('/AddSongs', { state: { userId: userId, code: code, token: token } })
               setIsOpen(false)}
             }
           >
-            Playlist
+            Add Songs to Library
+          </button>
+          <button
+            onClick={() =>
+              {
+              navigate('/GuessTheSong', { state: { userId: userId, code: code, token: token } })
+              setIsOpen(false)}
+            }
+          >
+            Guess the song
           </button>
         </div>
       )}

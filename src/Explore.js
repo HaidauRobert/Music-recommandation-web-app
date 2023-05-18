@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useSwipeable } from 'react-swipeable';
 import './CSS files/Explore.css';
 import SpotifyPlayer from './SpotifyPlayer';
 import { getToken, getPlaylistsByGenre, getUserProfile } from './Spotify';
@@ -46,6 +45,7 @@ const Explore = (props) => {
 
   useEffect(() => {
     if (!accessToken || !props.userId) return;
+    props.handleToken(accessToken);
     fetchRandomSong();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accessToken, props.userId]);
@@ -105,9 +105,12 @@ const Explore = (props) => {
         songId: song.id,
         songTitle: song.name,
         songArtist: song.artists[0].name,
+        songGenre: genre,
         albumImageUrl: song.album.images[0].url,
+        previewUrl: song.preview_url,
         userId: userId,
       });
+      console.log(genre)
     } catch (error) {
       console.error(error);
     }
@@ -131,6 +134,7 @@ const Explore = (props) => {
     const genrePreferences = response.data;
 
     let sum = 0;
+    
     for (const value of Object.values(genrePreferences)) {
       sum += value;
     }

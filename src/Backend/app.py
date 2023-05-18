@@ -1,3 +1,4 @@
+
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm.exc import NoResultFound
@@ -24,7 +25,10 @@ class LikedSongs(db.Model):
     song_id = db.Column(db.String, nullable=False)
     song_title = db.Column(db.String, nullable=False)
     song_artist = db.Column(db.String, nullable=False)
+    song_genre = db.Column(db.String, nullable=False)
     album_image_url = db.Column(db.String, nullable=False)
+    isliked = db.Column(db.Integer, nullable=False)
+    preview_url = db.Column(db.String, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
 
@@ -37,12 +41,19 @@ class UserGenrePreference(db.Model):
     jazz = db.Column(db.Integer, default=0)
     rnb = db.Column(db.Integer, default=0)
 
+
 @app.route('/get_genre_preference/<int:user_id>', methods=['GET'])
 def get_genre_preference(user_id):
     user_genre_preference = UserGenrePreference.query.filter_by(user_id=user_id).first()
-
     if user_genre_preference is None:
-        return jsonify({"error": "User not found"}), 404
+        genre_preference_data = {
+            "pop": 1,
+            "rock": 1,
+            "hiphop": 1,
+            "jazz": 1,
+            "rnb": 1,
+        }
+        return jsonify(genre_preference_data)
 
     genre_preference_data = {
         "pop": user_genre_preference.pop,
@@ -53,6 +64,7 @@ def get_genre_preference(user_id):
     }
 
     return jsonify(genre_preference_data)
+
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -79,12 +91,25 @@ def create_liked_song():
         return jsonify({'message': 'Song already exists for user'}), 409
 
     new_song = LikedSongs(song_id=data['songId'], song_title=data['songTitle'], song_artist=data['songArtist'],
-                          album_image_url=data['albumImageUrl'], user_id=data['userId'])
+                          song_genre=data['songGenre'], album_image_url=data['albumImageUrl'], user_id=data['userId'],
+                          preview_url=data['previewUrl'])
     db.session.add(new_song)
     db.session.commit()
     return jsonify({'message': 'Liked song added'}), 201
 
-
+@app.route('/unliked_songs/<int:user_id>', methods=['GET'])
+def get_unliked_songs(user_id):
+    unliked_songs = LikedSongs.query.filter_by(user_id=user_id).all()
+    unliked_songs_data = [
+        {
+            "song_id": song.song_id,
+            "song_title": song.song_title,
+            "song_artist": song.song_artist,
+            "song_genre": song.song_genre,
+            "album_image_url": song.album_image_url,
+            "preview_url": song.preview_url
+        } for song in unliked_songs]
+    return jsonify({"items": unliked_songs_data})
 
 @app.route('/update_genre_preference', methods=['POST'])
 def update_genre_preference():
@@ -102,19 +127,24 @@ def update_genre_preference():
     print(genre)
     if genre in ['pop', 'rock', 'hiphop', 'jazz', 'rnb']:
         current_value = getattr(user_genre_preference, genre)
-        new_value = current_value + 1 if liked else current_value - 1
+        if liked:
+            new_value = current_value + 1
+        elif (current_value > 1): current_value - 1
         setattr(user_genre_preference, genre, new_value)
 
     db.session.commit()
     return jsonify({'message': 'User genre preferences updated'}), 200
+
 
 @app.route('/liked_songs', methods=['GET'])
 def get_liked_songs():
     user_id = request.args.get('userId')
     liked_songs = LikedSongs.query.filter_by(user_id=user_id).all()
     liked_songs_data = [{"song_id": song.song_id, "song_title": song.song_title, "song_artist": song.song_artist,
-                         "album_image_url": song.album_image_url} for song in liked_songs] # add album image URL here
+                         "song_genre": song.song_genre,
+                         "album_image_url": song.album_image_url} for song in liked_songs]  # add album image URL here
     return jsonify({"items": liked_songs_data})
+
 
 @app.route('/liked_songs', methods=['DELETE'])
 def delete_liked_song():
