@@ -90,3 +90,31 @@
     background-color: #1f1f1f;
     color: #1DB954;
 }
+
+.popup {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    margin: 20px;
+    padding: 20px;
+    background-color: #1DB954;
+    color: white;
+    border-radius: 5px;
+  }
+.popup-wrong {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    margin: 20px;
+    padding: 20px;
+    background-color: red;
+    color: white;
+    border-radius: 5px;
+  }
+
+  @media screen and (max-width: 768px) {
+    .image-wrapperguess  {
+      width: 60%;
+      height: 60%;
+    }
+  }

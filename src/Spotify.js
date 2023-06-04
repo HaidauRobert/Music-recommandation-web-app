@@ -30,7 +30,6 @@ async function getTrack(trackId, token) {
   });
 
   const track = response.data;
-  console.log(track);
 
   const artistResponse = await axios.get(`${SPOTIFY_API_URL}/artists/${track.artists[0].id}`, {
     headers: {
@@ -58,7 +57,7 @@ async function getUserProfile(token) {
     return userId;
   } catch (error) {
     console.error('Error fetching user profile:', error);
-    console.error('Error response:', error.response); // Add this line
+    console.error('Error response:', error.response);
     throw error;
   }
 }

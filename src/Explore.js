@@ -7,6 +7,7 @@ import pauseImage from './poze/pause.png';
 import Loading from './Loading';
 import logo from './poze/SwipeTunes.png'
 import play from './poze/play.png'
+import { DislikeOutlined, HeartOutlined } from '@ant-design/icons'
 
 
 const SPOTIFY_API_URL = 'https://api.spotify.com/v1';
@@ -230,10 +231,10 @@ const Explore = (props) => {
           <br></br>
           <div className="buttons-container">
             <button className="dislike-button" onClick={onSwipedLeft} disabled={!hasStarted}>
-              Dislike
+              <DislikeOutlined />
             </button>
             <button className="like-button" onClick={onSwipedRight} disabled={!hasStarted}>
-              Like
+              <HeartOutlined />
             </button>
           </div>
           <SpotifyPlayer accessToken={accessToken} trackUri={song.uri} />

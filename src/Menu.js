@@ -47,6 +47,15 @@ const Menu = ({ userId, code, token }) => {
           >
             Guess the song
           </button>
+          <button
+            onClick={() =>
+              {
+              navigate('/Concerts', { state: { userId: userId, code: code, token: token } })
+              setIsOpen(false)}
+            }
+          >
+            Find Concerts
+          </button>
         </div>
       )}
     </div>

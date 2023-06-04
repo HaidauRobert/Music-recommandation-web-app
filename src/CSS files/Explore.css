@@ -38,26 +38,40 @@
   margin-top: 20px;
 }
 
-.dislike-button,
-.like-button {
-  background-color: white;
+.dislike-button {
   border: none;
-  color: black;
-  padding: 10% 30%;
+  color: red;
+  background-color: rgba(40,41,45,1);
+  padding: 3%;
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 125%;
-  margin-left:15%;
-  margin-right:15%;
+  font-size: 400%;
+  margin-left:50%;
+  margin-right:50%;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.like-button {
+  border: none;
+  color: #1DB954;
+  background-color: rgba(40,41,45,1);
+  padding: 3%;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 400%;
+  margin-left:50%;
+  margin-right:50%;
   cursor: pointer;
   border-radius: 4px;
 }
 
 .dislike-button:hover,
 .like-button:hover {
-  background-color: black;
-  color:white;
+  background-color: rgba(40,41,45,1);
+  color: white;
 }
 
 .start-overlay {
@@ -94,13 +108,9 @@
 
 .dislike-button:disabled,
 .like-button:disabled {
-  background-color: #808080;
+  background-color: rgba(40,41,45,1);
+  color:black;
   cursor: not-allowed;
-}
-
-.dislike-button:hover:disabled,
-.like-button:hover:disabled {
-  background-color: #808080;
 }
 
 .swipe-left {
@@ -123,4 +133,11 @@
 .song-container.swipe-right {
   position: absolute;
   z-index: 2;
+}
+
+@media screen and (max-width: 768px) {
+  .song-container {
+    width: 125%;
+    height: 75%;
+  }
 }

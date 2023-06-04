@@ -21,9 +21,9 @@
     padding: 2%;
     box-shadow: 0 1% 1.5% rgba(0, 0, 0, 0.2);
     width: 50%;
-    height: 80%;
+    height: 85%;
     margin: auto;
-    overflow-y: auto;
+    overflow-y: none;
 }
 
 .input-form form {
@@ -66,6 +66,21 @@
     background-color: black;
     color: #1DB954;
 }
+.add-library button{
+    border: none;
+    background-color: #1DB954;
+    color: white;
+    text-decoration: none;
+    font-size: 100%;
+    cursor: pointer;
+    border-radius: 8px;
+    transition-duration: 0.4s;
+}
+.add-library button:hover {
+    background-color: black;
+    color: #1DB954;
+}
+
 
 .track-info {
     color: #1DB954;
@@ -102,3 +117,24 @@
     height: 100%;
     display: flex;
 }
+
+.popup {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    margin: 20px;
+    padding: 20px;
+    background-color: #1DB954;
+    color: white;
+    border-radius: 5px;
+  }
+.popup-wrong {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    margin: 20px;
+    padding: 20px;
+    background-color: red;
+    color: white;
+    border-radius: 5px;
+  }

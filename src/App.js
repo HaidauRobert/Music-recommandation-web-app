@@ -4,6 +4,7 @@ import Login from './Login';
 import Explore from './Explore';
 import Library from './Library';
 import AddSongs from './AddSongs';
+import Concerts from './Concerts';
 import Menu from './Menu';
 import './CSS files/App.css';
 import GuessTheSong from './GuessTheSong';
@@ -67,6 +68,15 @@ function App() {
                 <>
                   <Menu />
                   <GuessTheSong code={code} userId={userId} token={token}/>
+                </>
+                }
+              />
+              <Route
+              path="/Concerts"
+              element={
+                <>
+                  <Menu />
+                  <Concerts code={code} userId={userId} token={token}/>
                 </>
                 }
               />

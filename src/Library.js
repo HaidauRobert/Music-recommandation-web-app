@@ -3,6 +3,7 @@ import axios from 'axios';
 import { DeleteOutlined, PlayCircleOutlined } from '@ant-design/icons';
 import { Table } from 'antd';
 import { Input } from 'antd';
+import ConfirmationPopup from './ConfirmationPopup';
 import './CSS files/Library.css';
 
 const BACKEND_API_URL = 'http://localhost:5000';
@@ -12,6 +13,10 @@ function Library(props) {
     const [likedSongs, setLikedSongs] = useState([]);
     const userId = props.userId;
     const [searchTerm, setSearchTerm] = useState('');
+    const [showPopup, setShowPopup] = useState(false); 
+    const [showConfirmationPopup, setShowConfirmationPopup] = useState(false);
+    const [songToDelete, setSongToDelete] = useState(null);
+
     const handleSearch = e => {
         setSearchTerm(e.target.value);
     };
@@ -41,29 +46,41 @@ function Library(props) {
         return songs;
     }
 
-    const handleDelete = async (song) => {
+    const handleDelete = (song) => {
+        setSongToDelete(song);
+        setShowConfirmationPopup(true);
+      };
+
+    const handleConfirmDelete = async () => {
         try {
-            // Remove the song from the likedSongs state
-            setLikedSongs(likedSongs.filter((s) => s.song_id !== song.song_id));
-
-            // Delete the song from the database
-            await axios.delete(`${BACKEND_API_URL}/liked_songs`, {
-                data: {
-                    userId: userId,
-                    songId: song.song_id,
-                },
-            });
-
-            // Update genre preference
-            await axios.post(`${BACKEND_API_URL}/update_genre_preference`, {
-                userId: userId,
-                genre: song.song_genre,
-                isLiked: false,
-            });
+          setLikedSongs(likedSongs.filter((s) => s.song_id !== songToDelete.song_id));
+      
+          await axios.delete(`${BACKEND_API_URL}/liked_songs`, {
+            data: {
+              userId: userId,
+              songId: songToDelete.song_id,
+            },
+          });
+      
+          await axios.post(`${BACKEND_API_URL}/update_genre_preference`, {
+            userId: userId,
+            genre: songToDelete.song_genre,
+            isLiked: false,
+          });
+      
+          setShowPopup(true);
+          setTimeout(() => setShowPopup(false), 3000);
         } catch (error) {
-            console.error(error);
+          console.error(error);
+        } finally {
+          setShowConfirmationPopup(false);
         }
-    };
+      };
+      
+      const handleCancelDelete = () => {
+        setShowConfirmationPopup(false);
+      };
+
 
     const redirectToSpotify = (songId) => {
         const spotifyUrl = `https://open.spotify.com/track/${songId}`;
@@ -174,6 +191,17 @@ function Library(props) {
                 dataSource={filteredSongs}
                 pagination={false}
             />
+            {showConfirmationPopup && (
+      <ConfirmationPopup
+        message="Are you sure you want to delete this song?"
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+      />
+    )}
+            {showPopup && (
+                <div className="popup-delete">
+                  Song deleted successfully
+                </div>)}
         </div>
     );
 

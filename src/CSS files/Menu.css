@@ -47,4 +47,22 @@
   .menu-items button:hover {
     background-color: #5c5c5c;
   }
+
+  @media screen and (max-width: 768px) {
+    .sidebar-menu {
+      width: 7%;
+
+    }
+    .sidebar-menu.open {
+      width: 15%;
+    }
+    .menu-toggle {
+      width:100%;
+      padding: 1rem 0.5rem;
+    }
+    .menu-items button {
+      font-size: 0.5rem;
+      margin-top:10%;
+    }
+  }
   

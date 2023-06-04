@@ -67,3 +67,13 @@
   padding-top:5%;
   padding-bottom:5%;
 }
+.popup-delete {
+  position: fixed;
+    bottom: 0;
+    right: 0;
+    margin: 20px;
+    padding: 20px;
+    background-color: red;
+    color: white;
+    border-radius: 5px;
+}

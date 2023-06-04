@@ -35,11 +35,11 @@ class LikedSongs(db.Model):
 class UserGenrePreference(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    pop = db.Column(db.Integer, default=0)
-    rock = db.Column(db.Integer, default=0)
-    hiphop = db.Column(db.Integer, default=0)
-    jazz = db.Column(db.Integer, default=0)
-    rnb = db.Column(db.Integer, default=0)
+    pop = db.Column(db.Integer, default=1)
+    rock = db.Column(db.Integer, default=1)
+    hiphop = db.Column(db.Integer, default=1)
+    jazz = db.Column(db.Integer, default=1)
+    rnb = db.Column(db.Integer, default=1)
 
 
 @app.route('/get_genre_preference/<int:user_id>', methods=['GET'])
@@ -129,7 +129,9 @@ def update_genre_preference():
         current_value = getattr(user_genre_preference, genre)
         if liked:
             new_value = current_value + 1
-        elif (current_value > 1): current_value - 1
+        else:
+            if (current_value > 1): new_value = current_value - 1
+            else: new_value = 1
         setattr(user_genre_preference, genre, new_value)
 
     db.session.commit()
@@ -160,6 +162,11 @@ def delete_liked_song():
     else:
         return jsonify({'message': 'Song not found'}), 404
 
+@app.route('/liked_artists/<int:user_id>', methods=['GET'])
+def get_liked_artists(user_id):
+    liked_songs = LikedSongs.query.filter_by(user_id=user_id).all()
+    liked_artists = list(set([song.song_artist for song in liked_songs]))
+    return jsonify({"liked_artists": liked_artists})
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -76,30 +76,33 @@
     padding: 0;
   }
   
-@media screen and (max-width: 480px) {
+  @media screen and (max-width: 480px) {
     .login-container {
       width: 90%;
       height: auto;
       padding: 20px;
     }
-  
-    .login-card,
-    .signup-card {
-      width: 100%;
-      height: auto;
+    .logo-container {
+      position:absolute;
+      top:-10%;
     }
   
-    .login-header,
-    .signup-header {
-      margin-left: 10%;
-      margin-right: 10%;
+    .button {
+      margin-top: 10%;
+      font-size: 24px;
+      padding: 10px 20px;
+    }
+    .circle {
+      transform: translateY(130%);
+      padding-bottom: 75%;
     }
   
-    .button-login,
-    .button-sign,
-    .button-sign-in {
-      flex-direction: column;
+    .header-big {
+      font-size: 48px;
+    }
+  
+    .header-small {
+      font-size: 12px;
     }
   }
-  
   
