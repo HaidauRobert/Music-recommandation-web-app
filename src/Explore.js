@@ -178,7 +178,6 @@ const Explore = (props) => {
       audio.pause();
       audio.currentTime = 0;
     }
-
     updateGenrePreference(props.userId, genre, false);
     await fetchRandomSong();
 

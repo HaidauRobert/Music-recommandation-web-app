@@ -53,6 +53,18 @@ function GuessTheSong(props) {
     setGuess(event.target.value);
   };
 
+  const calculateMatchPercentage = (guess) => {
+    const songTitle = currentSong.song_title.toLowerCase();
+    const guessLowerCase = guess.toLowerCase();
+    const fuzzyPattern = guessLowerCase.replace(/./g, (char) => `.*${char}`);
+    const regex = new RegExp(fuzzyPattern, 'i');
+    const match = songTitle.match(regex);
+    const matchPercentage = (match ? match[0].length : 0) / songTitle.length * 100;
+    return matchPercentage;
+  };
+  
+  
+
   const gameOverLogic = () => {
     if (!gameOver) {
       if (guess.toLowerCase() === currentSong.song_title.toLowerCase()) {
@@ -74,7 +86,9 @@ function GuessTheSong(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
     if (!gameOver) {
-      if (guess.toLowerCase() === currentSong.song_title.toLowerCase()) {
+      const formattedGuess = guess.trim(); 
+      const matchPercentage = calculateMatchPercentage(formattedGuess);  
+      if (matchPercentage >= 75) {
         setGuessMessage('You guessed!');
         setGameOver(true);
         setImgUrl(currentSong.album_image_url);
@@ -103,7 +117,11 @@ function GuessTheSong(props) {
 
   const startGame = () => {
     if (songs.length > 0) {
-      const randomIndex = Math.floor(Math.random() * songs.length);
+      let randomIndex = Math.floor(Math.random() * songs.length);
+      const currentSongIndex = songs.findIndex((song) => song === currentSong);
+      while (randomIndex === currentSongIndex) {
+        randomIndex = Math.floor(Math.random() * songs.length);
+      }
       setCurrentSong(songs[randomIndex]);
       setHasStarted(true);
       setGameOver(false);

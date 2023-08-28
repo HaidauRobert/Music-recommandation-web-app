@@ -23,7 +23,6 @@ function SpotifyPlayer({ accessToken, trackUri }) {
         },
       });
 
-      // Error handling
       spotifyPlayer.addListener('initialization_error', ({ message }) => {
         console.error(message);
       });
@@ -37,7 +36,7 @@ function SpotifyPlayer({ accessToken, trackUri }) {
         console.error(message);
       });
 
-      // Playback status updates
+
       spotifyPlayer.addListener('player_state_changed', (state) => {
         console.log(state);
       });

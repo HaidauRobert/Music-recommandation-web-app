@@ -116,23 +116,17 @@
 .swipe-left {
   transform: translateX(-100%);
   opacity: 0;
-  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+  transition: transform 1s ease-out, opacity 0.3s ease-out;
 }
 
 .swipe-right {
   transform: translateX(100%);
   opacity: 0;
-  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+  transition: transform 1s ease-out, opacity 0.3s ease-out;
 }
 
 .song-container {
   position: relative;
-}
-
-.song-container.swipe-left,
-.song-container.swipe-right {
-  position: absolute;
-  z-index: 2;
 }
 
 @media screen and (max-width: 768px) {
